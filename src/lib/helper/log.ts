@@ -1,1 +1,0 @@
-export const logInfo = (msg, ...args) => console.log(`JAT: ${msg}`, ...args)

@@ -1,6 +1,6 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import {logInfo} from "./helper/log";
+import { logSuccess } from "./helper/log";
 
 class Server {
   private app: express.Application;
@@ -20,7 +20,7 @@ class Server {
 
   start() {
     this.app.listen(this.port, () => {
-      logInfo(`Server is running on port ${this.port}`);
+      logSuccess(`Server is running on port ${this.port}`);
     })
   }
 

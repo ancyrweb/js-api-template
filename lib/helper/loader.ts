@@ -1,10 +1,10 @@
 import { ConnectionOptions } from "typeorm";
-import config from "../../../config/config";
-import env from "../../../config/env";
+import config from "../../config/config";
+import env from "../../config/env";
 
 export const loadORMConfig = () : ConnectionOptions => {
   return {
-    ...config,
+    ...config.orm,
     type: env.DATABASE_TYPE,
     host: env.DATABASE_HOST,
     port: env.DATABASE_PORT,

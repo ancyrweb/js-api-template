@@ -14,23 +14,24 @@ export type AppConfigType = {
   }
 }
 
+
 export default {
   orm: {
     synchronize: true,
-    logging: false,
+    logging: true,
     entities: [
-      "src/orm/entity/**/*.ts"
+      __dirname + "/../src/orm/entity/**/*.{ts,js}"
     ],
     migrations: [
-      "src/orm/migration/**/*.ts"
+      __dirname + "/../src/orm/migration/**/*.{ts,js}"
     ],
     subscribers: [
-      "src/orm/subscriber/**/*.ts"
+      __dirname + "/../src/orm/subscriber/**/*.{ts,js}"
     ],
     cli: {
-      entitiesDir: "src/orm/entity",
-      migrationsDir: "src/orm/migration",
-      subscribersDir: "src/orm/subscriber"
+      entitiesDir:  __dirname + "../src/orm/entity",
+      migrationsDir:  __dirname + "../src/orm/migration",
+      subscribersDir:  __dirname + "../src/orm/subscriber"
     }
   }
 } as AppConfigType;

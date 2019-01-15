@@ -1,7 +1,8 @@
-# Awesome Project Build with TypeORM
+# JS Api Template
 
-Steps to run this project:
+A simple template for developing APIs
+Features :
 
-1. Run `npm i` command
-2. Setup database settings inside `ormconfig.json` file
-3. Run `npm start` command
+* TypeORM with MySQL by default
+* Express
+* GraphQL with Apollo Server
