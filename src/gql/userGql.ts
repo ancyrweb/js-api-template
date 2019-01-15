@@ -3,7 +3,8 @@ import { User } from "../orm/entity/User";
 import { gqlResolver, gqlSchema } from "../../lib/helper/gqlLoader";
 import {errorResponse, successResponse} from "../../lib/helper/response";
 import Hydrate from "../../lib/decorator/Hydrate";
-import { pipeline } from "../../lib/helper/controller";
+import {CombinedGQLParameters, pipeline} from "../../lib/helper/controller";
+import PasswordHasher from "../../lib/security/PasswordHasher";
 
 gqlSchema`
   type User {
@@ -47,6 +48,11 @@ gqlResolver({
       pipeline.forEntity(User),
       pipeline.hydrate(),
       pipeline.validate(),
+      async (args: CombinedGQLParameters) => {
+        const entity = pipeline.helper.extractEntity(args) as User;
+        entity.password = await PasswordHasher.hash(entity.password);
+        return args;
+      },
       pipeline.save(),
       pipeline.serveEntity("user", "User successfully registered")
     ),

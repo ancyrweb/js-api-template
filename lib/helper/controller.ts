@@ -1,7 +1,8 @@
 import { pipe } from 'ramda';
-import {hydrate, repository, validateEntity} from "./services";
+import {hydrate, isProd, repository, validateEntity} from "./services";
 import {User} from "../../src/orm/entity/User";
 import {errorResponse, successResponse} from "./response";
+import {logError} from "./log";
 
 export type CombinedGQLParameters = {
   parent: any,
@@ -47,10 +48,24 @@ pipeline.validate = () => (params : CombinedGQLParameters & { extra: { entity: a
 };
 
 pipeline.save = <T>(klass?: new() => T) => async (params : CombinedGQLParameters) => {
-  await repository(params.extra.entityClass || klass).save(params.extra.entity);
+  try {
+    await repository(params.extra.entityClass || klass).save(params.extra.entity);
+  } catch (e) {
+    logError(e.message, e);
+
+    if (isProd()) {
+      return errorResponse("Cannot persist data", 500);
+    } else {
+      return errorResponse(e.message, 400);
+    }
+  }
   return params;
 };
 
 pipeline.serveEntity = (key, message) => (params: CombinedGQLParameters) => {
   return successResponse({ [key]: params.extra.entity }, message);
+};
+
+pipeline.helper = {
+  extractEntity: (args: CombinedGQLParameters) => args.extra.entity
 };

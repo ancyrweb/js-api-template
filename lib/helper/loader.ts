@@ -1,6 +1,7 @@
 import { ConnectionOptions } from "typeorm";
 import config from "../../config/config";
 import env from "../../config/env";
+import {LoggerOptions} from "../logger/Logger";
 
 export const loadORMConfig = () : ConnectionOptions => {
   return {
@@ -12,4 +13,11 @@ export const loadORMConfig = () : ConnectionOptions => {
     password: env.DATABASE_PASSWORD,
     database: env.DATABASE_NAME,
   }
-}
+};
+
+export const loadLoggerConfig = (env: "dev" | "prod") : LoggerOptions => {
+  return {
+    env,
+    ...config.logger
+  }
+};

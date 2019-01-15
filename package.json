@@ -5,29 +5,35 @@
    "author": "Rewieer",
    "license": "MIT",
    "scripts": {
-      "start": "ts-node src/index.ts",
+      "start": "ts-node src/index.ts --env=prod",
       "dev": "nodemon",
       "dev-debug": "node --inspect -r ts-node/register src/index.ts",
       "typeorm": "ts-node -r ts-node/register ./node_modules/.bin/typeorm"
    },
    "dependencies": {
+      "@phc/argon2": "^1.0.9",
       "@types/ramda": "^0.25.46",
       "apollo-server-express": "^2.3.1",
       "body-parser": "^1.18.3",
       "express": "^4.16.4",
       "graphql": "^14.0.2",
       "joi": "^14.3.1",
+      "jsonwebtoken": "^8.4.0",
       "lodash": "^4.17.11",
       "merge-graphql-schemas": "^1.5.8",
+      "minimist": "^1.2.0",
       "mysql": "^2.14.1",
       "ramda": "^0.26.1",
       "reflect-metadata": "^0.1.10",
-      "typeorm": "0.2.11"
+      "typeorm": "0.2.11",
+      "upash": "^1.0.2",
+      "winston": "^3.1.0"
    },
    "devDependencies": {
       "@types/express": "^4.16.0",
       "@types/joi": "^14.0.1",
       "@types/node": "^10.12.18",
+      "@types/winston": "^2.4.4",
       "nodemon": "^1.18.9",
       "ts-node": "7.0.1",
       "typescript": "3.2.2"

@@ -6,8 +6,12 @@ import ORM from "./orm/ORM";
 import {logInfo, logSuccess} from "./helper/log";
 import GraphQLServer from "./gql/GraphQLServer";
 import Validator from "../src/validation/Validator";
+import Logger, {LoggerOptions} from "./logger/Logger";
 
 class App {
+  public env: string;
+
+  public logger: Logger;
   public server: Server;
   public orm: ORM;
   public gqlServer: GraphQLServer;
@@ -19,10 +23,15 @@ class App {
   }
 
   async initialize(data: {
+    env: string,
     port: number,
     orm: ConnectionOptions,
-    gql: ApolloConfig
+    gql: ApolloConfig,
+    logger: LoggerOptions,
   }) {
+    this.logger = new Logger(data.logger);
+
+    this.env = data.env;
     this.server = new Server(data.port);
 
     logInfo("Initializing the ORM");

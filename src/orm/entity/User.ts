@@ -13,7 +13,7 @@ export class User implements Validable {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ unique: true })
     emailAddress: string;
 
     @Column()

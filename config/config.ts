@@ -11,9 +11,12 @@ export type AppConfigType = {
       migrationsDir: string,
       subscribersDir: string
     }
+  },
+  logger: {
+    path: string,
+    level: string,
   }
 }
-
 
 export default {
   orm: {
@@ -29,9 +32,13 @@ export default {
       __dirname + "/../src/orm/subscriber/**/*.{ts,js}"
     ],
     cli: {
-      entitiesDir:  __dirname + "../src/orm/entity",
-      migrationsDir:  __dirname + "../src/orm/migration",
-      subscribersDir:  __dirname + "../src/orm/subscriber"
+      entitiesDir:  __dirname + "/../src/orm/entity",
+      migrationsDir:  __dirname + "/../src/orm/migration",
+      subscribersDir:  __dirname + "/../src/orm/subscriber"
     }
+  },
+  logger: {
+    level: 'info',
+    path: __dirname + "/../var/logs",
   }
 } as AppConfigType;
