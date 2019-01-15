@@ -1,7 +1,9 @@
-import { hydrate, repository } from "../../lib/helper/services";
+import {hydrate, repository, validateEntity} from "../../lib/helper/services";
 import { User } from "../orm/entity/User";
 import { gqlResolver, gqlSchema } from "../../lib/helper/gqlLoader";
-import { successResponse } from "../../lib/helper/response";
+import {errorResponse, successResponse} from "../../lib/helper/response";
+import Hydrate from "../../lib/decorator/Hydrate";
+import { pipeline } from "../../lib/helper/controller";
 
 gqlSchema`
   type User {
@@ -41,11 +43,12 @@ gqlResolver({
     }
   },
   Mutation: {
-    async register(parent, args, context, info) {
-      console.log(args);
-      const user = hydrate(User, args.input);
-      await repository(User).save(user);
-      return successResponse({user}, "User successfully registered");
-    }
+    register: pipeline(
+      pipeline.forEntity(User),
+      pipeline.hydrate(),
+      pipeline.validate(),
+      pipeline.save(),
+      pipeline.serveEntity("user", "User successfully registered")
+    ),
   }
 });

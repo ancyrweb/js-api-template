@@ -1,18 +1,21 @@
 
 import {ConnectionOptions} from "typeorm";
 import { Config as ApolloConfig } from "apollo-server-express";
-import Server from './Server';
-import ORM from "./ORM";
+import Server from './http/Server';
+import ORM from "./orm/ORM";
 import {logInfo, logSuccess} from "./helper/log";
-import GraphQLServer from "./GraphQLServer";
+import GraphQLServer from "./gql/GraphQLServer";
+import Validator from "../src/validation/Validator";
 
 class App {
   public server: Server;
   public orm: ORM;
   public gqlServer: GraphQLServer;
+  public validator: Validator;
 
   constructor() {
     this.orm = new ORM();
+    this.validator = new Validator();
   }
 
   async initialize(data: {

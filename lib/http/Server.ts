@@ -1,6 +1,6 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import { logSuccess } from "./helper/log";
+import { logSuccess } from "../helper/log";
 
 class Server {
   private app: express.Application;

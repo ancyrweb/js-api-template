@@ -1,5 +1,5 @@
 import { ApolloServer, Config } from "apollo-server-express";
-import Server from "./Server";
+import Server from "../http/Server";
 
 class GraphQLServer {
   server: ApolloServer;
