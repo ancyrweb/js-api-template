@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import "./inc/gql.inc";
+import "./inc/route.inc";
 
 import App from "../lib/App";
 import { AppMailerEnv, loadLoggerConfig, loadMailerConfig, loadORMConfig} from "../lib/helper/loader";

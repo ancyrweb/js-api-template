@@ -8,6 +8,7 @@ import GraphQLServer from "./gql/GraphQLServer";
 import Validator from "../src/validation/Validator";
 import Logger, {LoggerOptions} from "./logger/Logger";
 import Mailer, {MailerConfig} from "./http/Mailer";
+import {loadRoutes} from "./helper/routeLoader";
 
 class App {
   public env: string;
@@ -37,6 +38,7 @@ class App {
 
     this.env = data.env;
     this.server = new Server(data.port);
+    loadRoutes(this.server);
 
     logInfo("Initializing the ORM");
     await this.orm.initialize(data.orm);
@@ -44,7 +46,7 @@ class App {
     logInfo("Initializing the GraphQL Server");
     this.gqlServer = new GraphQLServer(data.gql);
     this.gqlServer.integrate(this.server);
-    
+
     logSuccess("GraphQL server runs at localhost:" + data.port + "/graphql");
   }
 

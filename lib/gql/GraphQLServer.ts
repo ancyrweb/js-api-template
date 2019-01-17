@@ -8,7 +8,7 @@ class GraphQLServer {
   }
   integrate(server: Server) {
     this.server.applyMiddleware({
-      app: server.getApp()
+      app: server.app
     });
   }
 }

@@ -2,8 +2,16 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import { logSuccess } from "../helper/log";
 
+export interface ServerRouteConfig {
+  method: "GET" | "POST" | "DELETE" | "PATCH" | "PUT" | "HEAD" | "OPTIONS" | "ALL"
+  path: string,
+  async?: boolean
+}
+
+export type ServerRouteCallback = (req: express.Request, res: express.Response) => string | Promise<string> | void;
+
 class Server {
-  private app: express.Application;
+  public app: express.Application;
   private port: number;
 
   constructor(port: number) {
@@ -24,8 +32,17 @@ class Server {
     })
   }
 
-  getApp() {
-    return this.app;
+  route(config: ServerRouteConfig, callback: ServerRouteCallback) {
+    this.app[config.method.toLowerCase()](config.path, async (req, res) => {
+      if (config.async === true) {
+        return callback(req, res);
+      }
+
+      const result = await callback(req, res);
+      if (result) {
+        res.send(result);
+      }
+    })
   }
 }
 

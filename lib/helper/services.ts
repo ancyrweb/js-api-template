@@ -1,5 +1,6 @@
 import App from "../App";
 import Validable, {ConstraintBuilderFunction} from "../../src/validation/Validable";
+import {ServerRouteCallback, ServerRouteConfig} from "../http/Server";
 
 export const ORM = () => App.orm;
 export const repository = (type) => App.orm.getRepository(type);
