@@ -1,23 +1,32 @@
 import "reflect-metadata";
 import "./inc/gql.inc";
 
-import * as minimist from "minimist";
-
 import App from "../lib/App";
-import {loadLoggerConfig, loadORMConfig} from "../lib/helper/loader";
+import { AppMailerEnv, loadLoggerConfig, loadMailerConfig, loadORMConfig} from "../lib/helper/loader";
 import { gqlConfig } from "../lib/helper/gqlLoader";
+import { envFromArgs } from "../lib/helper/env";
+import { MailerConfig } from "../lib/http/Mailer";
 
-
-const cliArgs = minimist(process.argv.slice(2));
-const env = cliArgs.env || "dev";
+// === Mailing
+const createMailingTransport = (env: AppMailerEnv) : MailerConfig => {
+  return {
+    transport: {
+      host: env.host,
+      port: env.port,
+      secure: false,
+      auth: env.auth,
+    }
+  }
+};
 
 (async () => {
   await App.initialize({
-    env: env,
+    env: envFromArgs(),
     port: process.env.PORT ? parseInt(process.env.PORT, 10) : 4999,
     orm: loadORMConfig(),
     gql: gqlConfig(),
-    logger: loadLoggerConfig(env)
+    logger: loadLoggerConfig(envFromArgs()),
+    mailer: createMailingTransport(loadMailerConfig())
   });
   App.start();
 })();

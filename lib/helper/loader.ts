@@ -21,3 +21,19 @@ export const loadLoggerConfig = (env: "dev" | "prod") : LoggerOptions => {
     ...config.logger
   }
 };
+
+export interface AppMailerEnv {
+  auth?: object,
+  host: string
+  port: number,
+  proxy?: string
+};
+
+export const loadMailerConfig = () : AppMailerEnv => {
+  return {
+    auth: env.SMTP_AUTH,
+    host: env.SMTP_HOST,
+    port: env.SMTP_PORT,
+    proxy: env.SMTP_PROXY,
+  }
+};

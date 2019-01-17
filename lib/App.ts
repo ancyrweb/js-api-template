@@ -7,6 +7,7 @@ import {logInfo, logSuccess} from "./helper/log";
 import GraphQLServer from "./gql/GraphQLServer";
 import Validator from "../src/validation/Validator";
 import Logger, {LoggerOptions} from "./logger/Logger";
+import Mailer, {MailerConfig} from "./http/Mailer";
 
 class App {
   public env: string;
@@ -16,6 +17,7 @@ class App {
   public orm: ORM;
   public gqlServer: GraphQLServer;
   public validator: Validator;
+  public mailer: Mailer;
 
   constructor() {
     this.orm = new ORM();
@@ -28,8 +30,10 @@ class App {
     orm: ConnectionOptions,
     gql: ApolloConfig,
     logger: LoggerOptions,
+    mailer: MailerConfig,
   }) {
     this.logger = new Logger(data.logger);
+    this.mailer = new Mailer(data.mailer);
 
     this.env = data.env;
     this.server = new Server(data.port);
@@ -40,6 +44,7 @@ class App {
     logInfo("Initializing the GraphQL Server");
     this.gqlServer = new GraphQLServer(data.gql);
     this.gqlServer.integrate(this.server);
+    
     logSuccess("GraphQL server runs at localhost:" + data.port + "/graphql");
   }
 

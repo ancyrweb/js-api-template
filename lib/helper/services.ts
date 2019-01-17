@@ -12,3 +12,4 @@ export const validateObject = (entity: object, constraintAccessor: ConstraintBui
   App.validator.validate(entity, constraintAccessor, context);
 
 export const isProd = () => App.env === "prod";
+export const mailer = () => App.mailer;
