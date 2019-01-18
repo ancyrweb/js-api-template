@@ -1,75 +1,75 @@
+import { getServiceID } from "./decorator/ServiceDecorator";
+import {callHook, respondsToHook} from "./decorator/HookHandlerDecorator";
 
-import {ConnectionOptions} from "typeorm";
-import { Config as ApolloConfig } from "apollo-server-express";
-import Server from './http/Server';
-import ORM from "./orm/ORM";
-import {logInfo, logSuccess} from "./helper/log";
-import GraphQLServer from "./gql/GraphQLServer";
-import Validator from "../src/validation/Validator";
-import Logger, {LoggerOptions} from "./logger/Logger";
-import Mailer, {MailerConfig} from "./http/Mailer";
-import {loadRoutes, loadTemplatingHelpers} from "./helper/routeLoader";
-import Templating from "./template/Templating";
+export type ServiceConfigurator = (config: any) => any[];
 
 class App {
-  public env: string;
+  services: {[key: string]: {
+      klass: any,
+      obj: any
+      configurator?: ServiceConfigurator
+    }} = {};
 
-  public logger: Logger;
-  public server: Server;
-  public orm: ORM;
-  public gqlServer: GraphQLServer;
-  public validator: Validator;
-  public mailer: Mailer;
-  public templating: Templating;
+  hooks: {[key: string]: any} = {};
 
-  constructor() {
-    this.orm = new ORM();
-    this.validator = new Validator();
-  }
+  public env: "dev" | "prod";
 
-  async initialize(data: {
-    env: string,
-    port: number,
-    paths: {
-      views: string
-      public: string
-    },
-    orm: ConnectionOptions,
-    gql: ApolloConfig,
-    logger: LoggerOptions,
-    mailer: MailerConfig,
-  }) {
-    this.logger = new Logger(data.logger);
-    this.mailer = new Mailer(data.mailer);
+  async init(config: any) {
+    this.env = config.parameters.ENV;
 
-    this.env = data.env;
-    this.server = new Server(data.port);
-    loadRoutes(this.server);
-    loadTemplatingHelpers(this.server);
+    Object.keys(this.services).forEach(name => {
+      if (typeof this.services[name].configurator === "function") {
+        let params = this.services[name].configurator(config);
+        this.services[name].obj = new this.services[name].klass(...params);
+        return;
+      }
 
-    logInfo("Initializing the ORM");
-    await this.orm.initialize(data.orm);
-
-    logInfo("Initializing the GraphQL Server");
-    this.gqlServer = new GraphQLServer(data.gql);
-    this.gqlServer.integrate(this.server);
-
-    this.templating = new Templating({
-      viewsPath: data.paths.views,
-      publicPath: data.paths.public,
+      this.services[name].obj = new this.services[name].klass(config);
     });
-    this.templating.integrate(this.server);
 
-    logSuccess("GraphQL server runs at localhost:" + data.port + "/graphql");
+    Object.keys(this.hooks).forEach(name => {
+      Object.keys(this.services).forEach(serviceName => {
+        if (respondsToHook(this.services[serviceName].obj, name)) {
+          this.hooks[name].forEach(params => {
+            callHook(this.services[serviceName].obj, name, params);
+          })
+        }
+      })
+    });
+
+    for (let name of Object.keys(this.services)) {
+      if (typeof this.services[name].obj.initialize === "function") {
+        this.services[name].obj.initialize();
+      }
+    }
+
+    for (let name of Object.keys(this.services)) {
+      if (typeof this.services[name].obj.initializeAsync === "function") {
+        await this.services[name].obj.initializeAsync();
+      }
+    }
   }
 
-  async start() {
-    logInfo("Starting the server");
-    this.server.start();
+  add(service: any, configurator?: ServiceConfigurator) {
+    this.services[getServiceID(service)] = {
+      klass: service,
+      obj: null,
+      configurator: configurator,
+    };
+    return this;
+  }
+
+  service(name: string) {
+    return this.services[name].obj;
+  }
+
+  hook(name, ...data) {
+    if (!this.hooks[name]) {
+      this.hooks[name] = [];
+    }
+
+    this.hooks[name].push(data);
   }
 }
 
 export default new App();
-
-
-

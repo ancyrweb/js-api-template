@@ -1,24 +1,24 @@
-import Server from "../http/Server";
+import Server from "../../lib/http/Server";
 import * as express from 'express';
+import { ServiceID } from "../decorator/ServiceDecorator";
+import { service } from "../helper";
 
-export interface TemplateConfig {
-  viewsPath: string,
-  publicPath: string,
-}
 class Templating {
+  @ServiceID("templating") public id;
+
   private viewsPath: string;
   private publicPath: string;
 
-  constructor(config: TemplateConfig) {
-    this.viewsPath = config.viewsPath;
-    this.publicPath = config.publicPath;
+  constructor(config) {
+    this.viewsPath = config.paths.views;
+    this.publicPath = config.paths.public;
   }
 
-  public integrate(server: Server) {
+  initialize() {
+    const server = service("http") as Server;
     server.set("view engine", "ejs");
     server.set("views", this.viewsPath);
     server.app.use(express.static(this.publicPath));
-
   }
 }
 

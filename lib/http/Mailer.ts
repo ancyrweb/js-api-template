@@ -1,15 +1,12 @@
 import * as nodemailer from 'nodemailer';
-import * as SMTPTransport from "nodemailer/lib/smtp-transport";
-
-export interface MailerConfig {
-  transport: nodemailer.Transport | SMTPTransport.Options,
-  options?: nodemailer.TransportOptions,
-}
+import { ServiceID } from "../decorator/ServiceDecorator";
 
 class Mailer {
+  @ServiceID("mailer") public id;
+
   private mailer : nodemailer.Transporter;
-  constructor(config: MailerConfig) {
-    this.mailer = nodemailer.createTransport(config.transport, config.options)
+  constructor(transport, options) {
+    this.mailer = nodemailer.createTransport(transport, options)
   }
 
   send(options: nodemailer.SendMailOptions) {

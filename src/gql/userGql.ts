@@ -1,8 +1,7 @@
-import { repository } from "../../lib/helper/services";
 import { User } from "../orm/entity/User";
-import { CombinedGQLParameters, pipeline } from "../../lib/helper/controller";
+import { CombinedGQLParameters, pipeline } from "../helper/controller";
 import PasswordHasher from "../../lib/security/PasswordHasher";
-import { hook } from "../../lib2/helper";
+import { hook, repository } from "../../lib/helper";
 
 hook("gql-schema", `
   type User {
@@ -32,27 +31,21 @@ hook("gql-schema", `
   }
 `);
 
-hook("gql-resolver", {
-  Query: {
-    users(parent, args, context, info) {
-      return repository(User).find();
-    },
-    user(parent, args, context, info) {
-      return repository(User).findOne(args.id);
-    }
-  },
-  Mutation: {
-    register: pipeline(
-      pipeline.forEntity(User),
-      pipeline.hydrate(),
-      pipeline.validate(),
-      async (args: CombinedGQLParameters) => {
-        const entity = pipeline.helper.extractEntity(args) as User;
-        entity.password = await PasswordHasher.hash(entity.password);
-        return args;
-      },
-      pipeline.save(),
-      pipeline.serveEntity("user", "User successfully registered")
-    ),
-  }
+hook("gql-query", "users", (parent, args, context, info) => {
+  return repository(User).find();
 });
+hook("gql-query", "user", (parent, args, context, info) => {
+  return repository(User).findOne(args.id);
+});
+hook("gql-mutation", "register", pipeline(
+  pipeline.forEntity(User),
+  pipeline.hydrate(),
+  pipeline.validate(),
+  async (args: CombinedGQLParameters) => {
+    const entity = pipeline.helper.extractEntity(args) as User;
+    entity.password = await PasswordHasher.hash(entity.password);
+    return args;
+  },
+  pipeline.save(),
+  pipeline.serveEntity("user", "User successfully registered")
+));

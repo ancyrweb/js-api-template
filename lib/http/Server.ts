@@ -1,6 +1,9 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import { logSuccess } from "../helper/log";
+import {HttpServerInterface} from "../interface/HttpServerInterface";
+import Hook from "../decorator/HookHandlerDecorator";
+import {ServiceID} from "../decorator/ServiceDecorator";
+import {logInfo} from "../helper";
 
 export interface ServerRouteConfig {
   method: "GET" | "POST" | "DELETE" | "PATCH" | "PUT" | "HEAD" | "OPTIONS" | "ALL"
@@ -10,16 +13,23 @@ export interface ServerRouteConfig {
 
 export type ServerRouteCallback = (req: express.Request, res: express.Response) => string | Promise<string> | void;
 
-class Server {
+class Server implements HttpServerInterface {
+  @ServiceID("http") public id;
+
   public app: express.Application;
   private port: number;
 
-  constructor(port: number) {
+  constructor(config) {
     this.app = express();
     this.app.use(bodyParser.json());
 
+    this.port = config.http.port;
+  }
 
-    this.port = port;
+
+  @Hook("route")
+  addRoute(config, callback) {
+    this.route(config, callback);
   }
 
   use(app: any) {
@@ -38,7 +48,7 @@ class Server {
   }
   start() {
     this.app.listen(this.port, () => {
-      logSuccess(`Server is running on port ${this.port}`);
+      logInfo("Server is running at " + this.port);
     })
   }
 

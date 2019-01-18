@@ -1,6 +1,5 @@
-import {hydrate, isProd, repository, validateEntity} from "./services";
-import {errorResponse, successResponse} from "./response";
-import {logError} from "./log";
+import {hydrate, isProd, logError, repository, validateEntity} from "../../lib/helper";
+import { errorResponse, successResponse } from "./response";
 
 export type CombinedGQLParameters = {
   parent: any,

@@ -1,7 +1,10 @@
 import * as joi from "joi";
 import Validable, {ConstraintBuilderFunction} from "./Validable";
+import {ServiceID} from "../decorator/ServiceDecorator";
 
 class Validator {
+  @ServiceID("validator") public id;
+
   validator: joi.Root;
 
   constructor() {

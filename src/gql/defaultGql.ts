@@ -1,5 +1,4 @@
-import { gqlResolver, gqlSchema } from "../../lib/helper/gqlLoader";
-import {hook} from "../../lib2/helper";
+import {hook} from "../../lib/helper";
 
 hook("gql-schema", `
   interface MutationResponse {
@@ -8,12 +7,3 @@ hook("gql-schema", `
     message: String!
   }
 `);
-
-hook("gql-resolver", {
-  Query: {
-
-  },
-  Mutation: {
-
-  }
-});

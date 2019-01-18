@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
-import Validable, { ConstraintBuilder, Constraint } from "../../validation/Validable";
+import Validable, { ConstraintBuilder, Constraint } from "../../../lib/validation/Validable";
 
 @Entity()
 export class User implements Validable {
