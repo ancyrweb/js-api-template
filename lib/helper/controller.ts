@@ -1,6 +1,4 @@
-import { pipe } from 'ramda';
 import {hydrate, isProd, repository, validateEntity} from "./services";
-import {User} from "../../src/orm/entity/User";
 import {errorResponse, successResponse} from "./response";
 import {logError} from "./log";
 
@@ -29,7 +27,7 @@ export const pipeline = (...middlewares : Array<ControllerMiddleware>) => async 
 
 pipeline.combineGqlParameters = (parent, args, context, info) : CombinedGQLParameters => ({ parent, args, context, info, extra: {} });
 pipeline.forEntity = <T>(klass: new() => T) => (params : CombinedGQLParameters) => {
-  params.extra.entityClass = User;
+  params.extra.entityClass = klass;
   return params;
 };
 

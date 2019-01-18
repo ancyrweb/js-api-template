@@ -1,12 +1,10 @@
-import {hydrate, repository, validateEntity} from "../../lib/helper/services";
+import { repository } from "../../lib/helper/services";
 import { User } from "../orm/entity/User";
-import { gqlResolver, gqlSchema } from "../../lib/helper/gqlLoader";
-import {errorResponse, successResponse} from "../../lib/helper/response";
-import Hydrate from "../../lib/decorator/Hydrate";
-import {CombinedGQLParameters, pipeline} from "../../lib/helper/controller";
+import { CombinedGQLParameters, pipeline } from "../../lib/helper/controller";
 import PasswordHasher from "../../lib/security/PasswordHasher";
+import { hook } from "../../lib2/helper";
 
-gqlSchema`
+hook("gql-schema", `
   type User {
     id: Int
     emailAddress: String
@@ -32,9 +30,9 @@ gqlSchema`
   type Mutation {
     register(input: RegisterInput): RegisterResponse
   }
-`;
+`);
 
-gqlResolver({
+hook("gql-resolver", {
   Query: {
     users(parent, args, context, info) {
       return repository(User).find();

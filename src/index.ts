@@ -1,36 +1,21 @@
 import "reflect-metadata";
-import "./inc/gql.inc";
 import "./inc/route.inc";
+import "./inc/gql.inc";
 
-import App from "../lib/App";
-import {AppMailerEnv, loadLoggerConfig, loadMailerConfig, loadORMConfig, loadPaths} from "../lib/helper/loader";
-import { gqlConfig } from "../lib/helper/gqlLoader";
-import { envFromArgs } from "../lib/helper/env";
-import { MailerConfig } from "../lib/http/Mailer";
+import App from '../lib2/App';
+import config from "../config/config";
+import Server from "../lib2/http/Server";
+import Logger from "../lib2/logger/Logger";
+import ORM from "../lib2/orm/ORM";
+import GraphQLServer from "../lib2/gql/GraphQLServer";
 
-// === Mailing
-const createMailingTransport = (env: AppMailerEnv) : MailerConfig => {
-  return {
-    transport: {
-      host: env.host,
-      port: env.port,
-      secure: false,
-      auth: env.auth,
-    }
-  }
-};
-
-// === App is ready to start
+App
+  .add(Server)
+  .add(Logger)
+  .add(ORM)
+  .add(GraphQLServer);
 
 (async () => {
-  await App.initialize({
-    env: envFromArgs(),
-    port: process.env.PORT ? parseInt(process.env.PORT, 10) : 4999,
-    paths: loadPaths(),
-    orm: loadORMConfig(),
-    gql: gqlConfig(),
-    logger: loadLoggerConfig(envFromArgs()),
-    mailer: createMailingTransport(loadMailerConfig())
-  });
-  App.start();
+  await App.init(config);
+  (App.service("http") as Server).start();
 })();

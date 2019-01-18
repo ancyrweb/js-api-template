@@ -4,5 +4,5 @@ node_modules/
 build/
 tmp/
 temp/
-config/env.ts
+config/parameters.ts
 var/logs/*.log

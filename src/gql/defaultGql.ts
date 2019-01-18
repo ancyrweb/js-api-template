@@ -1,14 +1,15 @@
 import { gqlResolver, gqlSchema } from "../../lib/helper/gqlLoader";
+import {hook} from "../../lib2/helper";
 
-gqlSchema`
+hook("gql-schema", `
   interface MutationResponse {
     code: String!
     success: Boolean!
     message: String!
   }
-`;
+`);
 
-gqlResolver({
+hook("gql-resolver", {
   Query: {
 
   },

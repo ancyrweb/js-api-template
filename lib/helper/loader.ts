@@ -1,6 +1,6 @@
 import { ConnectionOptions } from "typeorm";
 import config from "../../config/config";
-import env from "../../config/env";
+import env from "../../config/parameters";
 import {LoggerOptions} from "../logger/Logger";
 
 export const loadORMConfig = () : ConnectionOptions => {
