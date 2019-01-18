@@ -27,7 +27,7 @@ export interface AppMailerEnv {
   host: string
   port: number,
   proxy?: string
-};
+}
 
 export const loadMailerConfig = () : AppMailerEnv => {
   return {
@@ -36,4 +36,12 @@ export const loadMailerConfig = () : AppMailerEnv => {
     port: env.SMTP_PORT,
     proxy: env.SMTP_PROXY,
   }
+};
+
+export interface AppPaths {
+  public: string,
+  views: string,
+}
+export const loadPaths = () : AppPaths => {
+  return config.paths;
 };

@@ -15,6 +15,10 @@ export type AppConfigType = {
   logger: {
     path: string,
     level: string,
+  },
+  paths: {
+    views: string,
+    public: string,
   }
 }
 
@@ -40,5 +44,9 @@ export default {
   logger: {
     level: 'info',
     path: __dirname + "/../var/logs",
+  },
+  paths: {
+    views: __dirname + '/../views',
+    public: __dirname + '/../public'
   }
 } as AppConfigType;

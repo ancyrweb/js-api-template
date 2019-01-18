@@ -22,10 +22,20 @@ class Server {
     this.port = port;
   }
 
-  use(app: express.Application) {
+  use(app: any) {
     this.app.use(app);
   }
 
+  set(key: string, value: any) {
+    this.app.set(key, value);
+  }
+
+  mergeLocals(locals: object) {
+    this.app.locals = {
+      ...this.app.locals,
+      ...locals
+    }
+  }
   start() {
     this.app.listen(this.port, () => {
       logSuccess(`Server is running on port ${this.port}`);
